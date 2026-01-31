@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface OfflineTransactionDao {
 
-    @Query("SELECT * FROM offline_transactions")
+    @Query("SELECT * FROM offline_transactions ORDER BY createdAt DESC")
     fun getAllOfflineTransactions(): Flow<List<OfflineTransaction>>
 
     @Query(

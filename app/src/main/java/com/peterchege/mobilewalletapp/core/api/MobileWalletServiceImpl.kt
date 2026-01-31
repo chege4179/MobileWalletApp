@@ -7,6 +7,7 @@ import com.peterchege.mobilewalletapp.core.models.responses.CustomerBalanceRespo
 import io.ktor.client.HttpClient
 import javax.inject.Inject
 import com.peterchege.mobilewalletapp.core.models.responses.CustomerLoginResponse
+import com.peterchege.mobilewalletapp.core.models.responses.RemoteTransaction
 import com.peterchege.mobilewalletapp.core.models.responses.SendMoneyResponse
 import com.peterchege.mobilewalletapp.core.util.Constants.prefix
 import com.peterchege.mobilewalletapp.core.util.NetworkResult
@@ -53,5 +54,18 @@ class MobileWalletServiceImpl @Inject constructor(
             }
         )
     }
+
+    override suspend fun fetchLast100Transactions(payload: CustomerBalancePayload): NetworkResult<List<RemoteTransaction>> {
+        return safeApiCall<List<RemoteTransaction>>(
+            json = json,
+            request = {
+                httpClient.post("$prefix/api/v1/transactions/last-100-transactions"){
+                    setBody(payload)
+                }
+            }
+        )
+    }
+
+
 
 }

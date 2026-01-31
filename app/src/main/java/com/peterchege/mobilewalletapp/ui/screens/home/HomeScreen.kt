@@ -2,6 +2,7 @@ package com.peterchege.mobilewalletapp.ui.screens.home
 
 import android.view.RoundedCorner
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -45,6 +47,8 @@ import com.peterchege.mobilewalletapp.core.models.responses.CustomerLoginRespons
 import com.peterchege.mobilewalletapp.core.util.safeApiCall
 import com.peterchege.mobilewalletapp.ui.components.AppButton
 import com.peterchege.mobilewalletapp.ui.components.AppLoader
+import com.peterchege.mobilewalletapp.ui.components.AppText
+import com.peterchege.mobilewalletapp.ui.components.Toolbar
 import com.peterchege.mobilewalletapp.ui.navigation.Screens
 
 @Composable
@@ -92,10 +96,10 @@ fun HomeScreen(
             navController.navigate(Screens.PROFILE_SCREEN)
         },
         onClickViewStatement = {
-
+            navController.navigate(Screens.REMOTE_TRANSACTION_SCREEN)
         },
         onClickViewLocalTransactions = {
-
+            navController.navigate(Screens.LOCAL_TRANSACTION_SCREEN)
         },
         onClickLogout = {
             viewModel.onClickLogout(
@@ -126,7 +130,10 @@ fun HomeScreenContent(
     AppLoader(isLoading = screenState.isLoading)
     if (isBalanceDialogVisible) {
         BasicAlertDialog(
-            modifier = Modifier.background(colorScheme.background),
+            modifier = Modifier
+                .fillMaxWidth(.9f)
+                .background(color = colorScheme.surface, shape = RoundedCornerShape(12.dp))
+                .border(width = 0.3.dp, color = Color.DarkGray, shape = RoundedCornerShape(12.dp)),
             onDismissRequest = onDismissRequest,
             content = {
                 Column(
@@ -136,9 +143,9 @@ fun HomeScreenContent(
                         .padding(10.dp)
                         .clip(RoundedCornerShape(10.dp))
                 ) {
-                    Text(text = "Account Number:  ${screenState.customerBalance?.accountNo}")
+                    AppText(text = "Account Number:  ${screenState.customerBalance?.accountNo}")
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = "Balance :  ${screenState.customerBalance?.balance}")
+                    AppText(text = "Balance :  ${screenState.customerBalance?.balance}")
                     Spacer(modifier = Modifier.height(10.dp))
                     AppButton(
                         text = "Dismiss",
@@ -150,15 +157,10 @@ fun HomeScreenContent(
         )
     }
     Scaffold(
+        containerColor = colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            TopAppBar(
-                title = { Text("Welcome ${userDetails.customerName}") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorScheme.primaryContainer,
-                    titleContentColor = colorScheme.onPrimaryContainer
-                )
-            )
+            Toolbar(text = "Welcome ${userDetails.customerName}")
         }
     ) { paddingValues ->
         Column(

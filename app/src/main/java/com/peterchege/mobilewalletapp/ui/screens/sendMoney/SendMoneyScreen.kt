@@ -4,43 +4,32 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.peterchege.mobilewalletapp.core.util.toast
+import com.peterchege.mobilewalletapp.ui.components.AppButton
+import com.peterchege.mobilewalletapp.ui.components.AppInputField
 import com.peterchege.mobilewalletapp.ui.components.AppLoader
+import com.peterchege.mobilewalletapp.ui.components.Toolbar
 
 
 @Composable
@@ -65,9 +54,9 @@ fun SendMoneyScreen(
     }
 
     LaunchedEffect(userDetails) {
-        if (userDetails.customerId?.isNotBlank() == true){
+        if (userDetails.customerId?.isNotBlank() == true) {
             viewModel.fetchAccountBalance(
-                customerId = userDetails.customerId ?:"",
+                customerId = userDetails.customerId ?: "",
                 onSuccess = {
 
                 }
@@ -83,11 +72,11 @@ fun SendMoneyScreen(
         onChangeCreditAccountNumber = viewModel::onChangeCreditAccountNumber,
         onChangeAmount = viewModel::onChangeAmount,
         onSubmit = {
-            if (screenState.customerBalance != null){
+            if (screenState.customerBalance != null) {
                 viewModel.onSubmit(
                     customerBalanceResponse = screenState.customerBalance!!,
                 )
-            }else{
+            } else {
                 context.toast(msg = "Failed to retrieve debiting account")
             }
         }
@@ -107,15 +96,10 @@ fun SendMoneyScreenContent(
 
 
     Scaffold(
+        containerColor = colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            TopAppBar(
-                title = { Text("Send Money") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
+            Toolbar(text = "Send Money")
         }
     ) { paddingValues ->
         Column(
@@ -127,71 +111,30 @@ fun SendMoneyScreenContent(
             verticalArrangement = Arrangement.Top
         ) {
 
-            OutlinedTextField(
-                value = screenState.creditAccountNumber,
-                onValueChange = onChangeCreditAccountNumber,
-                label = { Text("Account To ") },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !screenState.isLoading,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                )
+            AppInputField(
+                label = "Account To",
+                inputValue = screenState.creditAccountNumber,
+                onChangeInputValue = onChangeCreditAccountNumber,
+                keyboardType = KeyboardType.Text,
+                showVisibilityOption = false
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
-
-            OutlinedTextField(
-                value = screenState.amount,
-                onValueChange = onChangeAmount,
-                label = { Text("PIN") },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = screenState.isLoading.not(),
-                singleLine = true,
-                visualTransformation = VisualTransformation.None,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.NumberPassword,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        onSubmit()
-                    }
-                ),
-
-                )
-
+            AppInputField(
+                label = "Amount",
+                inputValue = screenState.amount,
+                onChangeInputValue = onChangeAmount,
+                keyboardType = KeyboardType.Number,
+                showVisibilityOption = false
+            )
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Login Button
-            Button(
-                onClick = onSubmit,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
+            AppButton(
+                text = "Submit",
                 enabled = screenState.isLoading.not() &&
                         screenState.creditAccountNumber.isNotBlank() &&
-                        screenState.amount.isNotBlank()
-            ) {
-                if (screenState.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.dp
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Submitting...")
-                } else {
-                    Text("Submit")
-                }
-            }
-
+                        screenState.amount.isNotBlank(),
+                onClick = onSubmit
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
         }

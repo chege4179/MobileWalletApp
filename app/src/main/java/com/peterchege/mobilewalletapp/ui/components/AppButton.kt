@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun AppButton(
     modifier: Modifier = Modifier
-        .fillMaxSize()
+        .fillMaxWidth()
         .height(56.dp),
     text: String,
     enabled: Boolean = true,
@@ -40,7 +40,7 @@ fun AppButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = colorScheme.primary,
-            disabledContainerColor = Color.Transparent
+            disabledContainerColor = Color(0xFF919191)
         ),
         shape = shape,
         contentPadding = ButtonDefaults.ContentPadding,

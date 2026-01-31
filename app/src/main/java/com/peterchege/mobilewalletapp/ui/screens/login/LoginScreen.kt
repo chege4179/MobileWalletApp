@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -48,6 +49,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.peterchege.mobilewalletapp.ui.components.AppButton
+import com.peterchege.mobilewalletapp.ui.components.AppInputField
+import com.peterchege.mobilewalletapp.ui.components.AppLoader
+import com.peterchege.mobilewalletapp.ui.components.Toolbar
 import com.peterchege.mobilewalletapp.ui.navigation.Screens
 
 // Composable Screen
@@ -103,16 +108,14 @@ fun LoginScreenContent(
     onLoginClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+
+
+    AppLoader(isLoading = screenState.isLoading)
     Scaffold(
+        containerColor = colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            TopAppBar(
-                title = { Text("Banking App Login") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
+            Toolbar(text = "Mobile Wallet App")
         }
     ) { paddingValues ->
         Box(
@@ -145,87 +148,33 @@ fun LoginScreenContent(
                 Spacer(modifier = Modifier.height(48.dp))
 
                 // Customer ID Field
-                OutlinedTextField(
-                    value = screenState.customerId,
-                    onValueChange = onCustomerIdChange,
-                    label = { Text("Customer ID") },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !screenState.isLoading,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    )
+                AppInputField(
+                    label = "Customer ID",
+                    inputValue = screenState.customerId,
+                    onChangeInputValue = onCustomerIdChange,
+                    keyboardType = KeyboardType.Text,
+                    showVisibilityOption = false
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // PIN Field (Masked)
-                OutlinedTextField(
-                    value = screenState.pin,
-                    onValueChange = onPinChange,
-                    label = { Text("PIN") },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = screenState.isLoading.not(),
-                    singleLine = true,
-                    visualTransformation = if (pinVisible)
-                        VisualTransformation.None
-                    else
-                        PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.NumberPassword,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            onLoginClick()
-                        }
-                    ),
-                    trailingIcon = {
-                        IconButton(onClick = onChangePinVisibility) {
-                            Icon(
-                                imageVector = if (pinVisible)
-                                    Icons.Default.VisibilityOff
-                                else
-                                    Icons.Default.Visibility,
-                                contentDescription = if (pinVisible)
-                                    "Hide PIN"
-                                else
-                                    "Show PIN"
-                            )
-                        }
-                    }
+                AppInputField(
+                    label = "PIN",
+                    inputValue = screenState.pin,
+                    onChangeInputValue = onPinChange,
+                    keyboardType = KeyboardType.Number,
+                    showVisibilityOption = true,
+                    contentDes = "PIN"
                 )
-
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Login Button
-                Button(
-                    onClick = onLoginClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
+                AppButton(
+                    text = "Login",
                     enabled = screenState.isLoading.not() &&
                             screenState.customerId.isNotBlank() &&
-                            screenState.pin.isNotBlank()
-                ) {
-                    if (screenState.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            strokeWidth = 2.dp
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Logging in...")
-                    } else {
-                        Text("Login")
-                    }
-                }
-
+                            screenState.pin.isNotBlank(),
+                    onClick = onLoginClick
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
             }

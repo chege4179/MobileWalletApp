@@ -18,4 +18,11 @@ sealed interface Screens {
     data object SEND_MONEY_SCREEN : Screens
 
 
+    @Serializable
+    data object LOCAL_TRANSACTION_SCREEN : Screens
+
+    @Serializable
+    data object REMOTE_TRANSACTION_SCREEN : Screens
+
+
 }

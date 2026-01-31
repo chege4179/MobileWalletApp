@@ -8,6 +8,8 @@ import com.peterchege.mobilewalletapp.ui.screens.home.HomeScreen
 import com.peterchege.mobilewalletapp.ui.screens.login.LoginScreen
 import com.peterchege.mobilewalletapp.ui.screens.profile.ProfileScreen
 import com.peterchege.mobilewalletapp.ui.screens.sendMoney.SendMoneyScreen
+import com.peterchege.mobilewalletapp.ui.screens.transactions.local.LocalTransactionScreen
+import com.peterchege.mobilewalletapp.ui.screens.transactions.remote.RemoteTransactionScreen
 
 @Composable
 fun AppNavigation(
@@ -16,8 +18,6 @@ fun AppNavigation(
     NavHost(
         navController = navController,
         startDestination = Screens.LOGIN_SCREEN,
-        route = null,
-        typeMap = emptyMap(),
     ) {
         composable<Screens.LOGIN_SCREEN> {
             LoginScreen(navController = navController)
@@ -32,6 +32,14 @@ fun AppNavigation(
         }
         composable<Screens.SEND_MONEY_SCREEN> {
             SendMoneyScreen(navController = navController)
+        }
+
+        composable<Screens.LOCAL_TRANSACTION_SCREEN> {
+            LocalTransactionScreen(navController = navController)
+        }
+
+        composable<Screens.REMOTE_TRANSACTION_SCREEN> {
+            RemoteTransactionScreen(navController = navController)
         }
     }
 

@@ -9,7 +9,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.peterchege.mobilewalletapp.core.util.Constants
 import com.peterchege.mobilewalletapp.core.util.Constants.syncTransactionsWorker
 import com.peterchege.mobilewalletapp.core.util.anyRunning
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,7 +35,8 @@ class SyncTransactionsWorkManagerImpl @Inject constructor(
             .conflate()
 
     override suspend fun startSync() {
-        val syncTransactionsRequest = OneTimeWorkRequestBuilder<SyncTransactionsWorker>()
+        val syncTransactionsRequest = OneTimeWorkRequestBuilder<DelegatingWorker>()
+            .setInputData(SyncTransactionsWorker::class.delegatedData())
             .setConstraints(
                 Constraints.Builder()
                     .setRequiredNetworkType(

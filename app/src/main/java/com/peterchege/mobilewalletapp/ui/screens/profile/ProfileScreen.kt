@@ -25,6 +25,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.peterchege.mobilewalletapp.core.models.responses.CustomerLoginResponse
 import com.peterchege.mobilewalletapp.ui.components.AppButton
+import com.peterchege.mobilewalletapp.ui.components.AppText
+import com.peterchege.mobilewalletapp.ui.components.Toolbar
 
 @Composable
 fun ProfileScreen(
@@ -48,14 +50,10 @@ fun ProfileScreenContent(
 ) {
 
     Scaffold(
+        containerColor = colorScheme.surface,
         topBar = {
-            TopAppBar(
-                title = { Text("Profile") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorScheme.primaryContainer,
-                    titleContentColor = colorScheme.onPrimaryContainer
-                )
-            )
+            Toolbar(text = "Profile")
+
         }
     ) { paddingValues ->
         Column(
@@ -67,11 +65,11 @@ fun ProfileScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text(text = "Name: ${userDetails.customerName}")
+            AppText(text = "Name: ${userDetails.customerName}")
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "Customer ID: ${userDetails.customerId}")
+            AppText(text = "Customer ID: ${userDetails.customerId}")
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "Email: ${userDetails.email}")
+            AppText(text = "Email: ${userDetails.email}")
             Spacer(modifier = Modifier.height(10.dp))
 
         }
