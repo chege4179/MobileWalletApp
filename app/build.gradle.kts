@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -66,6 +67,7 @@ composeCompiler {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.compose.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -80,6 +82,19 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    implementation(libs.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.work.runtime.ktx)
+
+
+    implementation(libs.material.icons.core)
+    implementation(libs.material.icons.extended)
+
+
+    implementation(libs.datastore.core.android)
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore.core)
+
     implementation(libs.ktorSerializer)
     implementation(libs.ktorClientCore)
     implementation(libs.ktorClientAndroid)
@@ -89,12 +104,17 @@ dependencies {
     implementation(libs.ktorOkhttp)
     implementation(libs.ktorNetwork)
     implementation(libs.ktorNetworkTls)
+    implementation(libs.logging.interceptor)
 
 
     implementation(libs.timber)
 
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.hilt.common)
 
-    implementation(libs.room.compiler)
+
+    ksp(libs.room.compiler)
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
 
@@ -102,8 +122,8 @@ dependencies {
     releaseImplementation(libs.chucker.release)
 
 
-    ksp(libs.hilt.android)
-    implementation(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
 
 
